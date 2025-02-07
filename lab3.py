@@ -55,43 +55,50 @@ if __name__ == "__main__":
     graph = GraphDB(uri, user, password)
     
     # Crear nodos generales
-    graph.create_node("User", {"userId": 1, "name": "Alice"})
-    graph.create_node("User", {"userId": 2, "name": "Bob"})
-    graph.create_node("User", {"userId": 3, "name": "Charlie"})
-    graph.create_node("User", {"userId": 4, "name": "David"})
-    graph.create_node("User", {"userId": 5, "name": "Eve"})
-    graph.create_node("Movie", {"movieId": 101, "title": "Inception", "year": 2010, "plot": "A mind-bending thriller"})
-    graph.create_node("Movie", {"movieId": 102, "title": "The Matrix", "year": 1999, "plot": "A hacker discovers reality is an illusion"})
-    graph.create_node("Movie", {"movieId": 103, "title": "Interstellar", "year": 2014, "plot": "A journey through space and time"})
-    graph.create_node("Movie", {"movieId": 104, "title": "The Dark Knight", "year": 2008, "plot": "Batman faces off against the Joker"})
-    graph.create_node("Movie", {"movieId": 105, "title": "Avatar", "year": 2009, "plot": "A paraplegic soldier is sent to Pandora"})
+    users = [
+        {"userId": 1, "name": "Alice"},
+        {"userId": 2, "name": "Bob"},
+        {"userId": 3, "name": "Charlie"},
+        {"userId": 4, "name": "David"},
+        {"userId": 5, "name": "Eve"}
+    ]
+    movies = [
+        {"movieId": 101, "title": "Inception", "year": 2010, "plot": "A mind-bending thriller"},
+        {"movieId": 102, "title": "The Matrix", "year": 1999, "plot": "A hacker discovers reality is an illusion"},
+        {"movieId": 103, "title": "Interstellar", "year": 2014, "plot": "A journey through space and time"}
+    ]
+    persons = [
+        {"name": "Leonardo DiCaprio", "tmdbId": 1, "role": "Actor"},
+        {"name": "Christopher Nolan", "tmdbId": 2, "role": "Director"},
+        {"name": "Keanu Reeves", "tmdbId": 3, "role": "Actor"}
+    ]
+    genres = [
+        {"name": "Sci-Fi"},
+        {"name": "Thriller"}
+    ]
 
-    # Crear relaciones generales
-    graph.create_relationship("User", ("userId", 1), "Movie", ("movieId", 101), "RATED", {"rating": 5, "timestamp": 1610000000})
-    graph.create_relationship("User", ("userId", 1), "Movie", ("movieId", 102), "RATED", {"rating": 4, "timestamp": 1610005000})
-    graph.create_relationship("User", ("userId", 2), "Movie", ("movieId", 101), "RATED", {"rating": 3, "timestamp": 1610010000})
-    graph.create_relationship("User", ("userId", 2), "Movie", ("movieId", 104), "RATED", {"rating": 5, "timestamp": 1610015000})
-    graph.create_relationship("User", ("userId", 3), "Movie", ("movieId", 103), "RATED", {"rating": 4, "timestamp": 1610020000})
-    graph.create_relationship("User", ("userId", 3), "Movie", ("movieId", 105), "RATED", {"rating": 5, "timestamp": 1610025000})
-    graph.create_relationship("User", ("userId", 4), "Movie", ("movieId", 101), "RATED", {"rating": 4, "timestamp": 1610030000})
-    graph.create_relationship("User", ("userId", 4), "Movie", ("movieId", 102), "RATED", {"rating": 5, "timestamp": 1610035000})
-    graph.create_relationship("User", ("userId", 5), "Movie", ("movieId", 104), "RATED", {"rating": 3, "timestamp": 1610040000})
-    graph.create_relationship("User", ("userId", 5), "Movie", ("movieId", 105), "RATED", {"rating": 4, "timestamp": 1610045000})
+    for user in users:
+        graph.create_node("User", user)
+    for movie in movies:
+        graph.create_node("Movie", movie)
+    for person in persons:
+        graph.create_node("Person", person)
+    for genre in genres:
+        graph.create_node("Genre", genre)
 
-    # Consultar nodos y relaciones
-    print(graph.find_node("User", "userId", 1))
-    print(graph.find_node("Movie", "movieId", 101))
-    print(graph.find_relationship("User", ("userId", 1), "RATED", "Movie", ("movieId", 101)))
+    # Crear relaciones
+    ratings = [
+        (1, 101, 5, 1610000000),
+        (2, 102, 4, 1610005000),
+        (3, 103, 5, 1610025000)
+    ]
+    for user_id, movie_id, rating, timestamp in ratings:
+        graph.create_relationship("User", "userId", user_id, "Movie", "movieId", movie_id, "RATED", {"rating": rating, "timestamp": timestamp})
 
+    graph.create_relationship("Person", "name", "Leonardo DiCaprio", "Movie", "movieId", 101, "ACTED_IN", {"role": "Dominick Cobb"})
+    graph.create_relationship("Person", "name", "Christopher Nolan", "Movie", "movieId", 101, "DIRECTED", {})
+    graph.create_relationship("Person", "name", "Keanu Reeves", "Movie", "movieId", 102, "ACTED_IN", {"role": "Neo"})
+    graph.create_relationship("Movie", "movieId", 101, "Genre", "name", "Sci-Fi", "IN_GENRE", {})
+    graph.create_relationship("Movie", "movieId", 102, "Genre", "name", "Sci-Fi", "IN_GENRE", {})
 
-    # Consultar y evidenciar la función
-    user_id = 1 
-    ratings = graph.find_user_with_ratings(user_id)
-
-    for user, rating, movie in ratings:
-        print(f"Usuario: {user['name']} (ID: {user['userId']})")
-        print(f"Película: {movie['title']} (ID: {movie['movieId']})")
-        print(f"Calificación: {rating['rating']}, Timestamp: {rating['timestamp']}")
-        print("-" * 50)
-    
     graph.close()
