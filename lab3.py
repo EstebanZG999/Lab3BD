@@ -35,6 +35,16 @@ class GraphDB:
         with self.driver.session() as session:
             result = session.run(query, **{property1[0]: property1[1], property2[0]: property2[1]})
             return [(record['a'], record['r'], record['b']) for record in result]
+        
+
+    def find_user_with_ratings(self, user_id):
+        query = """
+        MATCH (u:User {userId: $user_id})-[r:RATED]->(m:Movie)
+        RETURN u, r, m
+        """
+        with self.driver.session() as session:
+            result = session.run(query, user_id=user_id)
+            return [(record['u'], record['r'], record['m']) for record in result]
 
 # Ejemplo de uso
 if __name__ == "__main__":
@@ -72,5 +82,16 @@ if __name__ == "__main__":
     print(graph.find_node("User", "userId", 1))
     print(graph.find_node("Movie", "movieId", 101))
     print(graph.find_relationship("User", ("userId", 1), "RATED", "Movie", ("movieId", 101)))
+
+
+    # Consultar y evidenciar la función
+    user_id = 1 
+    ratings = graph.find_user_with_ratings(user_id)
+
+    for user, rating, movie in ratings:
+        print(f"Usuario: {user['name']} (ID: {user['userId']})")
+        print(f"Película: {movie['title']} (ID: {movie['movieId']})")
+        print(f"Calificación: {rating['rating']}, Timestamp: {rating['timestamp']}")
+        print("-" * 50)
     
     graph.close()
