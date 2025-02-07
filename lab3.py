@@ -88,12 +88,12 @@ if __name__ == "__main__":
 
     # Crear relaciones
     ratings = [
-        (1, 101, 5, 1610000000),
-        (2, 102, 4, 1610005000),
-        (3, 103, 5, 1610025000)
+        ("User", "userId", 1, "Movie", "movieId", 101, "RATED", {"rating": 5, "timestamp": 1610000000}),
+        ("User", "userId", 2, "Movie", "movieId", 102, "RATED", {"rating": 4, "timestamp": 1610005000}),
+        ("User", "userId", 3, "Movie", "movieId", 103, "RATED", {"rating": 5, "timestamp": 1610025000})
     ]
-    for user_id, movie_id, rating, timestamp in ratings:
-        graph.create_relationship("User", "userId", user_id, "Movie", "movieId", movie_id, "RATED", {"rating": rating, "timestamp": timestamp})
+    for relationship in ratings:
+        graph.create_relationship(*relationship)
 
     graph.create_relationship("Person", "name", "Leonardo DiCaprio", "Movie", "movieId", 101, "ACTED_IN", {"role": "Dominick Cobb"})
     graph.create_relationship("Person", "name", "Christopher Nolan", "Movie", "movieId", 101, "DIRECTED", {})
