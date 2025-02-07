@@ -87,18 +87,13 @@ if __name__ == "__main__":
         graph.create_node("Genre", genre)
 
     # Crear relaciones
-    ratings = [
-        ("User", "userId", 1, "Movie", "movieId", 101, "RATED", {"rating": 5, "timestamp": 1610000000}),
-        ("User", "userId", 2, "Movie", "movieId", 102, "RATED", {"rating": 4, "timestamp": 1610005000}),
-        ("User", "userId", 3, "Movie", "movieId", 103, "RATED", {"rating": 5, "timestamp": 1610025000})
-    ]
-    for relationship in ratings:
-        graph.create_relationship(*relationship)
-
-    graph.create_relationship("Person", "name", "Leonardo DiCaprio", "Movie", "movieId", 101, "ACTED_IN", {"role": "Dominick Cobb"})
-    graph.create_relationship("Person", "name", "Christopher Nolan", "Movie", "movieId", 101, "DIRECTED", {})
-    graph.create_relationship("Person", "name", "Keanu Reeves", "Movie", "movieId", 102, "ACTED_IN", {"role": "Neo"})
-    graph.create_relationship("Movie", "movieId", 101, "Genre", "name", "Sci-Fi", "IN_GENRE", {})
-    graph.create_relationship("Movie", "movieId", 102, "Genre", "name", "Sci-Fi", "IN_GENRE", {})
+    graph.create_relationship("User", ("userId", 1), "Movie", ("movieId", 101), "RATED", {"rating": 5, "timestamp": 1610000000})
+    graph.create_relationship("User", ("userId", 2), "Movie", ("movieId", 102), "RATED", {"rating": 4, "timestamp": 1610005000})
+    graph.create_relationship("User", ("userId", 3), "Movie", ("movieId", 103), "RATED", {"rating": 5, "timestamp": 1610025000})
+    graph.create_relationship("Person", ("name", "Leonardo DiCaprio"), "Movie", ("movieId", 101), "ACTED_IN", {"role": "Dominick Cobb"})
+    graph.create_relationship("Person", ("name", "Christopher Nolan"), "Movie", ("movieId", 101), "DIRECTED", {})
+    graph.create_relationship("Person", ("name", "Keanu Reeves"), "Movie", ("movieId", 102), "ACTED_IN", {"role": "Neo"})
+    graph.create_relationship("Movie", ("movieId", 101), "Genre", ("name", "Sci-Fi"), "IN_GENRE", {})
+    graph.create_relationship("Movie", ("movieId", 102), "Genre", ("name", "Sci-Fi"), "IN_GENRE", {})
 
     graph.close()
